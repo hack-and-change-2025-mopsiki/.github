@@ -27,6 +27,8 @@
 ![Дашборд 2](./Снимок%20экрана%20(1020).png)
 
 ### Демо
+https://drive.google.com/file/d/113hMKn3lnRZqnPMJ1fWkrD4_KyBbkFR4/view?usp=sharing
+
 ### Бот
 ![Пример работы с ботом](./Снимок%20экрана%20(1021).png)
 
