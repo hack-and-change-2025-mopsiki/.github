@@ -23,11 +23,11 @@
 
 ## 💪 Функционал прототипа
 ### Пример дашборда
-![Дашборд 1](./Снимок%20экрана%20(1019).png)
-![Дашборд 2](./Снимок%20экрана%20(1020).png)
+![Дашборд 1](https://drive.google.com/file/d/1UJuJQmsk-BzeE1iV_3yCa3yYrmO_7LAf/view?usp=sharing)
+![Дашборд 2](https://drive.google.com/file/d/1Fn0TYyO3HYw0AM-vBMqmw4uat-T8gwdd/view?usp=sharing)
 
 ### Бот
-![Пример работы с ботом](./Снимок%20экрана%20(1021).png)
+![Пример работы с ботом](https://drive.google.com/file/d/1TFCadR_7tCYJcQxliPFybitf5s6d7z8B/view?usp=sharing)
 
 ### Демо
 https://drive.google.com/file/d/113hMKn3lnRZqnPMJ1fWkrD4_KyBbkFR4/view?usp=sharing
