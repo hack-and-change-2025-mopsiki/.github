@@ -1,12 +1,191 @@
-## Hi there 👋
+# Мопсики. Hack and Change MWS Data Analytics Solution
 
-<!--
+Комплексное решение для сбора, анализа и визуализации данных из различных источников с использованием современного стека технологий.
 
-**Here are some ideas to get you started:**
+## Участники
+- Колчина Ксения
+- Скобенко Тимур
+- Шевченко Вероника
 
-🙋‍♀️ A short introduction - what is your organization all about?
-🌈 Contribution guidelines - how can the community get involved?
-👩‍💻 Useful resources - where can the community find your docs? Is there anything else the community should know?
-🍿 Fun facts - what does your team eat for breakfast?
-🧙 Remember, you can do mighty things with the power of [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
--->
+## 📋 Обзор решения
+
+Это многомодульное приложение, которое собирает посты из различных социальных платформ (Habr, Telegram, VC.ru), анализирует их тональность с помощью NLP модели и сохраняет результаты в облачную базу данных.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   DATA SOURCES                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │ Habr API     │  │ Telegram API │  │ VC.ru API    │      │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘      │
+└─────────┼──────────────────┼──────────────────┼─────────────┘
+          │                  │                  │
+          └──────────────────┼──────────────────┘
+                             │
+                    ┌────────▼────────┐
+                    │  COLLECTOR      │
+                    │  (Node.js/TS)   │
+                    │  - Fetch posts  │
+                    │  - Normalize    │
+                    │  - Pagination   │
+                    └────────┬────────┘
+                             │
+          ┌──────────────────┼──────────────────┐
+          │                  │                  │
+     ┌────▼─────┐      ┌────▼────────┐   ┌────▼─────┐
+     │ CATEGORIZER    │ MWS TABLES   │   │ CHATBOT   │
+     │ (Python/ML)    │ (Database)   │   │ (React)   │
+     │ - RuBERT       │              │   │           │
+     │ - Sentiment    │              │   │           │
+     └────┬─────┘      └────┬────────┘   └────┬─────┘
+          │                  │                  │
+          └──────────────────┼──────────────────┘
+                             │
+                    ┌────────▼────────┐
+                    │   FRONTEND      │
+                    │  (Next.js/React)│
+                    │  - Dashboard    │
+                    │  - Chat UI      │
+                    └─────────────────┘
+```
+
+---
+
+## 🏗️ Принципиальная структура проекта
+
+```
+hack-and-change-mws-da/
+├── collector/                 # Node.js сервис сбора данных
+│   └── index.ts              # Основной код с классами Source, Collector
+│
+├── categorizer/             # Python сервис анализа тональности
+│   └── main.py              # FastAPI приложение с RuBERT
+│
+├── chatbot-fullstack/        # Next.js frontend приложение
+│   ├── app/                 # Next.js app directory
+│   │   ├── api/chat/route.ts # API маршрут для чата
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── src/
+│   │   ├── ui/  
+│   │   │   ├── components/ChatInterface.tsx       # Интерфейс  
+│   │   └── hooks/                                 # Хуки
+│   ├── middleware/                                # Next.js middleware для чата
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── next.config.ts
+│
+└── .github/
+    └── README.md            # Этот файл
+```
+
+---
+
+## Компоненты решения
+
+### 1. **Collector** (Node.js + TypeScript)
+
+**Задача:** Сбор постов из множественных источников.
+
+**Возможности:**
+- Поддержка различных внеших источников
+- Пагинация для получения всех данных
+- Адаптеры для Habr API, Telegram, VC.ru
+- Синхронизация с MWS Tables (облачная БД)
+- Обновление существующих и создание новых записей
+
+### 2. **Categorizer** (Python + FastAPI + RuBERT)
+
+**Задача:** Анализ тональности текстов на русском языке.
+
+**Технологии:**
+- **RuBERT** - предобученная модель для русского языка
+- **PyTorch** - для вычислений на GPU/CPU
+- **FastAPI** - асинхронный REST API
+
+**API Endpoints:**
+
+| Метод | Endpoint | Описание |
+|-------|----------|---------|
+| GET | `/` | Хэлс чек |
+| POST | `/sentiment` | Анализ тональности |
+
+**Пример использования:**
+
+```bash
+curl -X POST http://localhost:8000/sentiment \
+  -H "Content-Type: application/json" \
+  -d '{
+    "texts": [
+      "Отличный продукт!",
+      "Очень плохо",
+      "Нормально"
+    ]
+  }'
+```
+
+**Ответ:**
+
+```json
+{
+  "results": [
+    {"text": "Отличный продукт!", "sentiment": "positive", "confidence": 0.95},
+    {"text": "Очень плохо", "sentiment": "negative", "confidence": 0.92},
+    {"text": "Нормально", "sentiment": "neutral", "confidence": 0.87}
+  ]
+}
+```
+
+---
+
+### 3. **Chatbot Fullstack** (Next.js + React)
+
+**Задача:** Frontend для отображения данных и интерактивного чата.
+
+**Технологии:**
+- **Next.js 16** - React-фреймворк
+- 🎨 **Shadcn/ui** - компоненты дизайн-системы
+- 🔄 **useStreamChat** - hook для потокового чата
+
+
+## 🔄 Рабочие процессы
+
+### Процесс сбора данных
+
+```
+┌─────────────────┐
+│  Инициализация  │
+│   источников    │
+└────────┬────────┘
+         │
+    ┌────▼─────────────────────┐
+    │ Получить пути к постам   │
+    │  (списки URL/ID)         │
+    └────┬─────────────────────┘
+         │
+    ┌────▼──────────────────────┐
+    │ Асинхронно загрузить      │
+    │ данные постов от каждого  │
+    │ источника (Promise.all)   │
+    └────┬──────────────────────┘
+         │
+    ┌────▼──────────────────────┐
+    │ Получить существующие     │
+    │ посты из MWS Tables       │
+    │ (с пагинацией)            │
+    └────┬──────────────────────┘
+         │
+    ┌────▼──────────────────────┐
+    │ Разделить на:             │
+    │ - Обновляемые (exists)    │
+    │ - Новые (not exists)      │
+    └────┬──────────────────────┘
+         │
+    ┌────▼──────────────────────┐
+    │ Отправить PATCH и POST    │
+    │ запросы в MWS Tables      │
+    └─────────────────────────────┘
+```
+
+## Требования и установка
+
+Подробнее в соответствующих репозиториях
